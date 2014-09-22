@@ -1,0 +1,16 @@
+build/built-jar.properties
+build/classes/.netbeans_automatic_build
+build/classes/.netbeans_update_resources
+build/classes/snakegame/Block.class
+nbproject/private/retriever/catalog.xml
+nbproject/private/private.xml
+nbproject/private/private.properties
+nbproject/private/config.properties
+dist/lib/golden_0_2_3.jar
+dist/SnakeGame.jar
+dist/README.TXT
+build/classes/snakegame/Text.class
+build/classes/snakegame/SnakeGame.class
+build/classes/snakegame/MakeGame.class
+build/classes/snakegame/MainMenu.class
+build/classes/snakegame/GameSettings.class
