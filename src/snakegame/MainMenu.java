@@ -63,7 +63,7 @@ public class MainMenu extends GameObject {
         //Display the background.
         gd.setColor(Color.LIGHT_GRAY);
         gd.fillRect(0, 0, getWidth(), 670);
-        
+
         switch (menuStatus) {
             case 0:
                 //Change this to the sprites (the text.drawString)
@@ -73,48 +73,52 @@ public class MainMenu extends GameObject {
                 text.drawString(gd, "CUSTOMIZE GAME", 245, 423);
                 break;
             case 1:
-                text.drawString(gd, "NITRO:", 245, 123);
+                text.drawString(gd, "NITRO:", 245, 75);
                 if (settings.isNitroOn()) {
                     text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 330, 123);
+                    text.drawString(gd, "ON", 350, 75);
                 } else {
                     text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 330, 123);
+                    text.drawString(gd, "OFF", 350, 75);
                 }
                 text.setColor(Color.WHITE);
 
-                text.drawString(gd, "SLOW:", 245, 223);
+                text.drawString(gd, "SLOW:", 245, 150);
                 if (settings.isSlowOn()) {
                     text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 330, 223);
+                    text.drawString(gd, "ON", 350, 150);
                 } else {
                     text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 330, 223);
+                    text.drawString(gd, "OFF", 350, 150);
                 }
                 text.setColor(Color.WHITE);
 
-                text.drawString(gd, "MAZE:", 245, 323);
+                text.drawString(gd, "MAZE:", 245, 225);
                 if (settings.isMazeOn()) {
                     text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 330, 323);
+                    text.drawString(gd, "ON", 350, 225);
                 } else {
                     text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 330, 323);
+                    text.drawString(gd, "OFF", 350, 225);
                 }
-                
+
                 text.setColor(Color.WHITE);
-                text.drawString(gd, "POISON:", 245, 423);
+                text.drawString(gd, "POISON:", 245, 300);
                 if (settings.isPoisonOn()) {
                     text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 330, 423);
+                    text.drawString(gd, "ON", 350, 300);
                 } else {
                     text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 330, 423);
+                    text.drawString(gd, "OFF", 350, 300);
                 }
 
                 text.setColor(Color.WHITE);
+                text.drawString(gd, "LIVES:", 245, 375);
+                text.drawString(gd, "3", 350, 375);
+                text.drawString(gd, "<", 330, 375);
+                text.drawString(gd, ">", 370, 375);
 
-                text.drawString(gd, "BACK", 245, 523);
+                text.drawString(gd, "BACK", 245, 450);
                 break;
         }
 
@@ -126,5 +130,4 @@ public class MainMenu extends GameObject {
         showCursor();
         text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
     }
-
 }

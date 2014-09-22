@@ -216,7 +216,7 @@ public class MakeGame extends GameObject {
     }
 
     //Set the difficulty (speed) of the snake.
-    public void setDifficulty() {
+    private void setDifficulty() {
         switch (settings.getDifficulty()) {
             case 0:
                 DEFAULT_SPEED = 12;
@@ -286,7 +286,7 @@ public class MakeGame extends GameObject {
     }
 
     //Change the position of the food block.
-    public void resetFood() {
+    private void resetFood() {
         do {
             foodX = (((int) (Math.random() * 100)) % 38) + 1;
             foodY = (((int) (Math.random() * 100)) % 38) + 1;
@@ -335,7 +335,7 @@ public class MakeGame extends GameObject {
     }
 
     //Reset the game into its default parameters.
-    public void resetGame() {
+    private void resetGame() {
         changedDirection = false;
         pwrupX = pwrupY = poisonX = poisonY = -1;
         score = 0;
