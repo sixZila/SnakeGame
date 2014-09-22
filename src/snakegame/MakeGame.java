@@ -27,7 +27,6 @@ public class MakeGame extends GameObject {
     private int counter;
     private int snakeDirection;
     private int score;
-    private int gameStatus;
     private int life;
     private int pwrStatus;
     private int duration;
@@ -41,7 +40,10 @@ public class MakeGame extends GameObject {
     private double foodX;
     private double foodY;
     private int delay;
+    //Game status 0 = in game | 1 = gane over | 2 = paused
+    private int gameStatus;
 
+    //Initial Instantiation
     public MakeGame(GameEngine ge, GameSettings settings) {
         super(ge);
         this.settings = settings;
@@ -49,9 +51,11 @@ public class MakeGame extends GameObject {
 
     @Override
     public void initResources() {
+        //Instantiate the snake, border and maze (maze power up)
         snake = new ArrayList<>();
         border = new ArrayList<>();
         maze = new ArrayList<>();
+
         gameStatus = delay = 0;
         text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
         setDifficulty();
@@ -103,22 +107,28 @@ public class MakeGame extends GameObject {
                     //Moke the snake
                     moveSnake();
 
+                    //Check collision with bounderies.
                     if (snakeX == 0 || snakeX == 39 || snakeY == 0 || snakeY == 39 || checkSnake() || checkMaze()) {
+                        //Game Over
                         gameStatus = 1;
                     }
+
+                    //Check collision with food
                     if (snakeX == foodX && snakeY == foodY) {
                         resetFood();
-                        //hasEaten = true;
                         a = 1;
                         score++;
                         System.out.println("Score: " + score);
                     }
 
+                    //Check collision with power up
                     if (snakeX == pwrupX && snakeY == pwrupY) {
+                        //Remove power up from the field
                         pwrupX = pwrupY = -1;
                         pwrUp.setX(-1);
                         pwrUp.setY(-1);
 
+                        //Check which power up.
                         switch (pwrStatus) {
                             case 0:
                                 speed += 4;
@@ -135,28 +145,26 @@ public class MakeGame extends GameObject {
                         duration = 0;
                     }
 
+                    //Check collision with poison.
                     if (snakeX == poisonX && snakeY == poisonY) {
                         resetPoison();
                         removeLife();
                     }
 
-                    //Update the snake
+                    //Update Sprites
                     for (Block b : snake) {
                         b.update(l);
                     }
-
                     for (Block b : maze) {
                         b.update(l);
                     }
-
-                    foodBlock.update(l);
-                    pwrUp.update(l);
                     if (settings.isPoisonOn()) {
                         poison.update(l);
                     }
+                    foodBlock.update(l);
+                    pwrUp.update(l);
                 }
                 break;
-
             case 1:
             case 2:
                 listenInput();
@@ -165,8 +173,8 @@ public class MakeGame extends GameObject {
     }
 
     @Override
-    public void render(Graphics2D gd
-    ) {
+    public void render(Graphics2D gd) {
+        //Display Background
         gd.setColor(Color.LIGHT_GRAY);
         gd.fillRect(0, 0, getWidth(), 640);
         gd.setColor(Color.BLACK);
@@ -193,11 +201,13 @@ public class MakeGame extends GameObject {
         text.drawString(gd, "Life: " + life, 500, 640);
 
         if (gameStatus == 1) {
+            //If the game is over display game over screen.
             gd.setColor(Color.BLACK);
             gd.fillRect(0, 320, getWidth(), 60);
             text.drawString(gd, "GAME OVER", 245, 323);
             text.drawString(gd, "Press [Enter] to restart. Press [Escape] to Exit", 100, 353);
         } else if (gameStatus == 2) {
+            //If game is paused display pause screen
             gd.setColor(Color.BLACK);
             gd.fillRect(0, 320, getWidth(), 60);
             text.drawString(gd, "  PAUSED  ", 245, 323);
@@ -205,6 +215,7 @@ public class MakeGame extends GameObject {
         }
     }
 
+    //Set the difficulty (speed) of the snake.
     public void setDifficulty() {
         switch (settings.getDifficulty()) {
             case 0:
@@ -250,6 +261,7 @@ public class MakeGame extends GameObject {
         return false;
     }
 
+    //Checks which power ups are enabled.
     private boolean checkPowerUp() {
         switch (pwrStatus) {
             case 0:
@@ -262,6 +274,7 @@ public class MakeGame extends GameObject {
         return false;
     }
 
+    //Change the position of the poison block.
     private void resetPoison() {
         do {
             poisonX = (((int) (Math.random() * 100)) % 38) + 1;
@@ -272,6 +285,7 @@ public class MakeGame extends GameObject {
         poison.setY(poisonY * blockSizeY);
     }
 
+    //Change the position of the food block.
     public void resetFood() {
         do {
             foodX = (((int) (Math.random() * 100)) % 38) + 1;
@@ -282,6 +296,7 @@ public class MakeGame extends GameObject {
         foodBlock.setY(foodY * blockSizeY);
     }
 
+    //Spawn a power up in the map.
     private void spawnPowerup() {
         do {
             pwrupX = (((int) (Math.random() * 100)) % 38) + 1;
@@ -290,7 +305,8 @@ public class MakeGame extends GameObject {
 
         do {
             pwrStatus = (int) (Math.random() * 100) % 3;
-
+            
+            //Check which power up is chosen.
             switch (pwrStatus) {
                 case 0:
                     pwrUp.setImage(getImage("slowBlock.png"));
@@ -307,6 +323,8 @@ public class MakeGame extends GameObject {
         } while (checkPowerUp());
     }
 
+    
+    //When a maze power up is created, reduce the snake to 3/4 size and change that into a boundery
     private void createMaze() {
         int size = snake.size() - 1;
 
@@ -316,6 +334,7 @@ public class MakeGame extends GameObject {
         }
     }
 
+    //Reset the game into its default parameters.
     public void resetGame() {
         changedDirection = false;
         pwrupX = pwrupY = poisonX = poisonY = -1;
@@ -326,7 +345,7 @@ public class MakeGame extends GameObject {
         life = 3;
         snakeX = 10;
         snakeY = 12;
-        
+
         snake.clear();
         maze.clear();
 
@@ -341,6 +360,7 @@ public class MakeGame extends GameObject {
         resetFood();
     }
 
+    //Subtract a life to the snake when it eats a poison block.
     private void removeLife() {
         life--;
         if (life == 0) {
@@ -348,6 +368,7 @@ public class MakeGame extends GameObject {
         }
     }
 
+    //Move the snake.
     private void moveSnake() {
         double oldX, oldY, temp;
         oldX = oldY = temp = -1;
@@ -389,6 +410,7 @@ public class MakeGame extends GameObject {
         changedDirection = true;
     }
 
+    //Listen for an input.
     private void listenInput() {
         switch (gameStatus) {
             case 0:
@@ -426,6 +448,7 @@ public class MakeGame extends GameObject {
         }
     }
 
+    //Check collision with the snake if it has hit any part of itself.
     private boolean checkSnake() {
         double x = 0, y = 0;
         for (int i = 0; i < snake.size(); i++) {
@@ -441,6 +464,7 @@ public class MakeGame extends GameObject {
         return false;
     }
 
+    //Check if the snake has collided with the maze.
     private boolean checkMaze() {
         double x = snake.get(0).getX(), y = snake.get(0).getY();
         for (Block b : maze) {
@@ -451,6 +475,7 @@ public class MakeGame extends GameObject {
         return false;
     }
 
+    //Instantiate the border.
     private void setBorder() {
         for (int i = 0; i < 40; i++) {
             for (int j = 0; j < 40; j++) {

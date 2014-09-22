@@ -20,8 +20,10 @@ public class MainMenu extends GameObject {
     @Override
     public void update(long l) {
         if (click()) {
+            //0 = main menu | 1 = customize game
             switch (menuStatus) {
                 case 0:
+                    //change this to checkPosMouse([SPRITE NAME], true);
                     if (checkPosMouse(245, 123, 295, 153)) {
                         parent.nextGameID = 1;
                         settings.setDifficulty(0);
@@ -39,6 +41,7 @@ public class MainMenu extends GameObject {
                     }
                     break;
                 case 1:
+                    //change this to checkPosMouse([SPRITE NAME], true);
                     if (checkPosMouse(245, 123, 295, 153)) {
                         settings.setNitroOn(!settings.isNitroOn());
                     } else if (checkPosMouse(245, 223, 295, 253)) {
@@ -57,12 +60,13 @@ public class MainMenu extends GameObject {
 
     @Override
     public void render(Graphics2D gd) {
+        //Display the background.
         gd.setColor(Color.LIGHT_GRAY);
-        gd.fillRect(0, 0, getWidth(), 640);
-        gd.setColor(Color.BLACK);
-        gd.fillRect(0, 640, getWidth(), 30);
+        gd.fillRect(0, 0, getWidth(), 670);
+        
         switch (menuStatus) {
             case 0:
+                //Change this to the sprites (the text.drawString)
                 text.drawString(gd, "EASY", 245, 123);
                 text.drawString(gd, "MEDIUM", 245, 223);
                 text.drawString(gd, "HARD", 245, 323);
