@@ -414,16 +414,16 @@ public class MakeGame extends GameObject {
     private void listenInput() {
         switch (gameStatus) {
             case 0:
-                if (keyPressed(KeyEvent.VK_W) && snakeDirection != 3) {
+                if ((keyPressed(KeyEvent.VK_W) || keyPressed(KeyEvent.VK_UP)) && snakeDirection != 3) {
                     snakeDirection = 1;
                     changedDirection = false;
-                } else if (keyPressed(KeyEvent.VK_A) && snakeDirection != 2) {
+                } else if ((keyPressed(KeyEvent.VK_A) || keyPressed(KeyEvent.VK_LEFT)) && snakeDirection != 2) {
                     snakeDirection = 4;
                     changedDirection = false;
-                } else if (keyPressed(KeyEvent.VK_S) && snakeDirection != 1) {
+                } else if ((keyPressed(KeyEvent.VK_S) || keyPressed(KeyEvent.VK_DOWN)) && snakeDirection != 1) {
                     snakeDirection = 3;
                     changedDirection = false;
-                } else if (keyPressed(KeyEvent.VK_D) && snakeDirection != 4) {
+                } else if ((keyPressed(KeyEvent.VK_D) || keyPressed(KeyEvent.VK_RIGHT)) && snakeDirection != 4) {
                     snakeDirection = 2;
                     changedDirection = false;
                 } else if (keyPressed(KeyEvent.VK_ESCAPE)) {
