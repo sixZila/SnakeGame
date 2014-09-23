@@ -2,6 +2,7 @@ package snakegame;
 
 import com.golden.gamedev.GameEngine;
 import com.golden.gamedev.GameObject;
+import com.golden.gamedev.object.Sprite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -9,6 +10,10 @@ import java.awt.Graphics2D;
 public class MainMenu extends GameObject {
 
     private Text text;
+    private Sprite easyButton;
+    private Sprite mediumButton;
+    private Sprite hardButton;
+    private Sprite optionsButton;
     private int menuStatus;
     private final GameSettings settings;
     private final HighScore highScores;
@@ -20,25 +25,41 @@ public class MainMenu extends GameObject {
     }
 
     @Override
+    public void initResources() {
+        menuStatus = 0;
+        showCursor();
+        text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
+        easyButton = new Sprite(getImage("easyButton.png"), 128, 100);
+        mediumButton = new Sprite(getImage("mediumButton.png"), 128, 200);
+        hardButton = new Sprite(getImage("hardButton.png"), 128, 300);
+        optionsButton = new Sprite(getImage("optionsButton.png"), 128, 400);
+    }
+
+    @Override
     public void update(long l) {
         if (click()) {
             //0 = main menu | 1 = customize game
             switch (menuStatus) {
                 case 0:
+                    easyButton.update(l);
+                    mediumButton.update(l);
+                    hardButton.update(l);
+                    optionsButton.update(l);
+
                     //change this to checkPosMouse([SPRITE NAME], true);
-                    if (checkPosMouse(245, 123, 295, 153)) {
+                    if (checkPosMouse(easyButton, true)) {
                         parent.nextGameID = 1;
                         settings.setDifficulty(0);
                         finish();
-                    } else if (checkPosMouse(245, 223, 295, 253)) {
+                    } else if (checkPosMouse(mediumButton, true)) {
                         parent.nextGameID = 1;
                         settings.setDifficulty(1);
                         finish();
-                    } else if (checkPosMouse(245, 323, 295, 353)) {
+                    } else if (checkPosMouse(hardButton, true)) {
                         parent.nextGameID = 1;
                         settings.setDifficulty(2);
                         finish();
-                    } else if (checkPosMouse(245, 423, 295, 453)) {
+                    } else if (checkPosMouse(optionsButton, true)) {
                         menuStatus = 1;
                     }
                     break;
@@ -70,13 +91,16 @@ public class MainMenu extends GameObject {
         gd.setColor(Color.LIGHT_GRAY);
         gd.fillRect(0, 0, getWidth(), 670);
 
+        gd.setColor(new Color((float) 0.5019, (float) 0.2509, (float) 0.0));
+        gd.fillRect(25, 25, 590, 620);
+
         switch (menuStatus) {
             case 0:
                 //Change this to the sprites (the text.drawString)
-                text.drawString(gd, "EASY", 245, 123);
-                text.drawString(gd, "MEDIUM", 245, 223);
-                text.drawString(gd, "HARD", 245, 323);
-                text.drawString(gd, "CUSTOMIZE GAME", 245, 423);
+                easyButton.render(gd);
+                mediumButton.render(gd);
+                hardButton.render(gd);
+                optionsButton.render(gd);
                 break;
             case 1:
                 text.drawString(gd, "NITRO:", 245, 75);
@@ -102,13 +126,6 @@ public class MainMenu extends GameObject {
                 break;
         }
 
-    }
-
-    @Override
-    public void initResources() {
-        menuStatus = 0;
-        showCursor();
-        text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
     }
 
     private void writeOnOff(boolean b, int x, int y, Graphics2D gd) {
