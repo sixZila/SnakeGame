@@ -14,6 +14,7 @@ public class MakeGame extends GameObject {
     private final double blockSizeX = 16;
     private final double blockSizeY = 16;
     private final GameSettings settings;
+    private final HighScore highScores;
     private int DEFAULT_SPEED;
     private int a;
     private Block foodBlock;
@@ -31,6 +32,7 @@ public class MakeGame extends GameObject {
     private int pwrStatus;
     private int duration;
     private boolean changedDirection;
+    private boolean highScoreChecked;
     private double snakeX;
     private double snakeY;
     private double poisonX;
@@ -44,22 +46,23 @@ public class MakeGame extends GameObject {
     private int gameStatus;
 
     //Initial Instantiation
-    public MakeGame(GameEngine ge, GameSettings settings) {
+    public MakeGame(GameEngine ge, GameSettings settings, HighScore highScores) {
         super(ge);
         this.settings = settings;
+        this.highScores = highScores;
     }
-
+    
     @Override
     public void initResources() {
         //Instantiate the snake, border and maze (maze power up)
         snake = new ArrayList<>();
         border = new ArrayList<>();
         maze = new ArrayList<>();
-
+        
         gameStatus = delay = 0;
         text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
         setDifficulty();
-
+        
         foodBlock = new Block(getImage("foodBlock.png"), -1, -1);
         if (settings.isPoisonOn()) {
             poison = new Block(getImage("poisonBlock.png"), -1, -1);
@@ -68,7 +71,7 @@ public class MakeGame extends GameObject {
         setBorder(settings.getLevel());
         resetGame();
     }
-
+    
     @Override
     public void update(long l) {
         switch (gameStatus) {
@@ -80,16 +83,16 @@ public class MakeGame extends GameObject {
 
                 //Delay
                 delay = (delay + 1) % speed;
-
+                
                 counter = (counter + 1) % 1000;
                 duration++;
-
+                
                 if (counter == 500 || counter == 0) {
                     if (settings.isPoisonOn()) {
                         resetPoison();
                     }
                 }
-
+                
                 if (duration == 350) {
                     speed = DEFAULT_SPEED;
                     if (pwrStatus != 3) {
@@ -98,11 +101,11 @@ public class MakeGame extends GameObject {
                         pwrUp.setY(-1);
                     }
                 }
-
+                
                 if (counter == 0 && settings.isPwrUpOn()) {
                     spawnPowerup();
                 }
-
+                
                 if (delay == 0) {
                     //Moke the snake
                     moveSnake();
@@ -111,6 +114,7 @@ public class MakeGame extends GameObject {
                     if (snakeX == 0 || snakeX == 39 || snakeY == 0 || snakeY == 39 || checkSnake() || checkMaze()) {
                         //Game Over
                         gameStatus = 1;
+                        checkHighScore();
                     }
 
                     //Check collision with food
@@ -140,7 +144,7 @@ public class MakeGame extends GameObject {
                                 createMaze();
                                 break;
                         }
-
+                        
                         pwrStatus = 3;
                         duration = 0;
                     }
@@ -171,7 +175,7 @@ public class MakeGame extends GameObject {
                 break;
         }
     }
-
+    
     @Override
     public void render(Graphics2D gd) {
         //Display Background
@@ -179,27 +183,28 @@ public class MakeGame extends GameObject {
         gd.fillRect(0, 0, getWidth(), 640);
         gd.setColor(Color.BLACK);
         gd.fillRect(0, 640, getWidth(), 30);
-
+        
         for (Block b : snake) {
             b.render(gd);
         }
-
+        
         for (Block b : maze) {
             b.render(gd);
         }
-
+        
         foodBlock.render(gd);
         if (settings.isPoisonOn()) {
             poison.render(gd);
         }
         pwrUp.render(gd);
-
+        
         for (Block b : border) {
             b.render(gd);
         }
-        text.drawString(gd, "Score: " + score, 300, 640);
-        text.drawString(gd, "Life: " + life, 500, 640);
-
+        text.drawString(gd, "Score: " + score, 200, 640);
+        text.drawString(gd, "Life: " + life, 350, 640);
+        text.drawString(gd, "High Score: " + highScores.getHighscore(settings.getDifficulty()), 450, 640);
+        
         if (gameStatus == 1) {
             //If the game is over display game over screen.
             gd.setColor(Color.BLACK);
@@ -231,6 +236,16 @@ public class MakeGame extends GameObject {
     }
 
     //CHECKERS
+    //CHECK IF THERE IS A NEW HIGHSCORE
+    private void checkHighScore() {
+        if (!highScoreChecked) {
+            if (score > highScores.getHighscore(settings.getDifficulty())) {
+                highScores.setHighScore(score, settings.getDifficulty());
+            }
+            highScoreChecked = true;
+        }
+    }
+
     //CHECK IF COORDINATE IS OVERLAPPING WITH SNAKE
     private boolean checkCoordinate(double x, double y, int mod) {
         for (Block b : snake) {
@@ -280,7 +295,7 @@ public class MakeGame extends GameObject {
             poisonX = (((int) (Math.random() * 100)) % 38) + 1;
             poisonY = (((int) (Math.random() * 100)) % 38) + 1;
         } while (checkCoordinate(poisonX, poisonY, 1));
-
+        
         poison.setX(poisonX * blockSizeX);
         poison.setY(poisonY * blockSizeY);
     }
@@ -291,7 +306,7 @@ public class MakeGame extends GameObject {
             foodX = (((int) (Math.random() * 100)) % 38) + 1;
             foodY = (((int) (Math.random() * 100)) % 38) + 1;
         } while (checkCoordinate(foodX, foodY, 0));
-
+        
         foodBlock.setX(foodX * blockSizeX);
         foodBlock.setY(foodY * blockSizeY);
     }
@@ -302,7 +317,7 @@ public class MakeGame extends GameObject {
             pwrupX = (((int) (Math.random() * 100)) % 38) + 1;
             pwrupY = (((int) (Math.random() * 100)) % 38) + 1;
         } while (checkCoordinate(pwrupX, pwrupY, 2));
-
+        
         do {
             pwrStatus = (int) (Math.random() * 100) % 3;
 
@@ -326,7 +341,7 @@ public class MakeGame extends GameObject {
     //When a maze power up is created, reduce the snake to 3/4 size and change that into a boundery
     private void createMaze() {
         int size = snake.size() - 1;
-
+        
         for (int i = size; i > size * 3 / 4; i--) {
             maze.add(new Block(getImage("brickBlock.png"), snake.get(i).getX(), snake.get(i).getY()));
             snake.remove(i);
@@ -335,7 +350,7 @@ public class MakeGame extends GameObject {
 
     //Reset the game into its default parameters.
     private void resetGame() {
-        changedDirection = false;
+        changedDirection = highScoreChecked = false;
         pwrupX = pwrupY = poisonX = poisonY = -1;
         score = 0;
         counter = 1;
@@ -344,13 +359,13 @@ public class MakeGame extends GameObject {
         life = settings.getLives();
         snakeX = 10;
         snakeY = 12;
-
+        
         snake.clear();
         maze.clear();
-
+        
         snake.add(new Block(getImage("snakeBlock.png"), snakeX * blockSizeX, snakeY * blockSizeY));
         snake.add(new Block(getImage("snakeBlock.png"), (snakeX - 1) * blockSizeX, snakeY * blockSizeY));
-
+        
         pwrUp.setX(-1);
         pwrUp.setY(-1);
         if (settings.isPoisonOn()) {
@@ -364,6 +379,7 @@ public class MakeGame extends GameObject {
         life--;
         if (life == 0) {
             gameStatus = 1;
+            checkHighScore();
         }
     }
 
@@ -385,7 +401,7 @@ public class MakeGame extends GameObject {
                 snakeX--;
                 break;
         }
-
+        
         for (int i = 0; i < snake.size(); i++) {
             if (i == 0) {
                 oldX = snake.get(i).getX();
@@ -485,7 +501,7 @@ public class MakeGame extends GameObject {
                         }
                     }
                 }
-            break;
+                break;
         }
     }
 }

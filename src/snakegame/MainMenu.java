@@ -11,10 +11,12 @@ public class MainMenu extends GameObject {
     private Text text;
     private int menuStatus;
     private final GameSettings settings;
+    private final HighScore highScores;
 
-    public MainMenu(GameEngine ge, GameSettings settings) {
+    public MainMenu(GameEngine ge, GameSettings settings, HighScore highScores) {
         super(ge);
         this.settings = settings;
+        this.highScores = highScores;
     }
 
     @Override
