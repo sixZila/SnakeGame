@@ -10,7 +10,7 @@ public class MainMenu extends GameObject {
 
     private Text text;
     private int menuStatus;
-    private GameSettings settings;
+    private final GameSettings settings;
 
     public MainMenu(GameEngine ge, GameSettings settings) {
         super(ge);
@@ -42,15 +42,19 @@ public class MainMenu extends GameObject {
                     break;
                 case 1:
                     //change this to checkPosMouse([SPRITE NAME], true);
-                    if (checkPosMouse(245, 123, 295, 153)) {
+                    if (checkPosMouse(245, 75, 370, 95)) {
                         settings.setNitroOn(!settings.isNitroOn());
-                    } else if (checkPosMouse(245, 223, 295, 253)) {
+                    } else if (checkPosMouse(245, 150, 370, 170)) {
                         settings.setSlowOn(!settings.isSlowOn());
-                    } else if (checkPosMouse(245, 323, 295, 353)) {
+                    } else if (checkPosMouse(245, 225, 370, 240)) {
                         settings.setMazeOn(!settings.isMazeOn());
-                    } else if (checkPosMouse(245, 423, 295, 453)) {
+                    } else if (checkPosMouse(245, 300, 370, 320)) {
                         settings.setPoison(!settings.isPoisonOn());
-                    } else if (checkPosMouse(245, 423, 295, 553)) {
+                    } else if (checkPosMouse(330, 375, 340, 395)) {
+                        settings.setLives((settings.getLives() - 1) < 1 ? 9 : (settings.getLives() - 1));
+                    } else if (checkPosMouse(370, 375, 380, 395)) {
+                        settings.setLives((settings.getLives()) % 9 + 1);
+                    } else if (checkPosMouse(245, 450, 370, 470)) {
                         menuStatus = 0;
                     }
                     break;
@@ -74,47 +78,21 @@ public class MainMenu extends GameObject {
                 break;
             case 1:
                 text.drawString(gd, "NITRO:", 245, 75);
-                if (settings.isNitroOn()) {
-                    text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 350, 75);
-                } else {
-                    text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 350, 75);
-                }
-                text.setColor(Color.WHITE);
+                writeOnOff(settings.isNitroOn(), 350, 75, gd);
 
                 text.drawString(gd, "SLOW:", 245, 150);
-                if (settings.isSlowOn()) {
-                    text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 350, 150);
-                } else {
-                    text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 350, 150);
-                }
-                text.setColor(Color.WHITE);
+                writeOnOff(settings.isSlowOn(), 350, 150, gd);
 
                 text.drawString(gd, "MAZE:", 245, 225);
-                if (settings.isMazeOn()) {
-                    text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 350, 225);
-                } else {
-                    text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 350, 225);
-                }
+                writeOnOff(settings.isMazeOn(), 350, 225, gd);
 
                 text.setColor(Color.WHITE);
                 text.drawString(gd, "POISON:", 245, 300);
-                if (settings.isPoisonOn()) {
-                    text.setColor(Color.GREEN);
-                    text.drawString(gd, "ON", 350, 300);
-                } else {
-                    text.setColor(Color.RED);
-                    text.drawString(gd, "OFF", 350, 300);
-                }
+                writeOnOff(settings.isPoisonOn(), 350, 300, gd);
 
                 text.setColor(Color.WHITE);
                 text.drawString(gd, "LIVES:", 245, 375);
-                text.drawString(gd, "3", 350, 375);
+                text.drawString(gd, settings.getLives() + "", 350, 375);
                 text.drawString(gd, "<", 330, 375);
                 text.drawString(gd, ">", 370, 375);
 
@@ -129,5 +107,16 @@ public class MainMenu extends GameObject {
         menuStatus = 0;
         showCursor();
         text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
+    }
+
+    private void writeOnOff(boolean b, int x, int y, Graphics2D gd) {
+        if (b) {
+            text.setColor(Color.GREEN);
+            text.drawString(gd, "ON", x, y);
+        } else {
+            text.setColor(Color.RED);
+            text.drawString(gd, "OFF", x, y);
+        }
+        text.setColor(Color.WHITE);
     }
 }

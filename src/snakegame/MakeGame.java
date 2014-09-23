@@ -65,7 +65,7 @@ public class MakeGame extends GameObject {
             poison = new Block(getImage("poisonBlock.png"), -1, -1);
         }
         pwrUp = new Block();
-        setBorder();
+        setBorder(settings.getLevel());
         resetGame();
     }
 
@@ -305,7 +305,7 @@ public class MakeGame extends GameObject {
 
         do {
             pwrStatus = (int) (Math.random() * 100) % 3;
-            
+
             //Check which power up is chosen.
             switch (pwrStatus) {
                 case 0:
@@ -323,7 +323,6 @@ public class MakeGame extends GameObject {
         } while (checkPowerUp());
     }
 
-    
     //When a maze power up is created, reduce the snake to 3/4 size and change that into a boundery
     private void createMaze() {
         int size = snake.size() - 1;
@@ -342,7 +341,7 @@ public class MakeGame extends GameObject {
         counter = 1;
         snakeDirection = 2;
         speed = DEFAULT_SPEED;
-        life = 3;
+        life = settings.getLives();
         snakeX = 10;
         snakeY = 12;
 
@@ -476,13 +475,17 @@ public class MakeGame extends GameObject {
     }
 
     //Instantiate the border.
-    private void setBorder() {
-        for (int i = 0; i < 40; i++) {
-            for (int j = 0; j < 40; j++) {
-                if ((i == 0 || i == 39) || (j == 0 || j == 39)) {
-                    border.add(new Block(getImage("brickBlock.png"), j * blockSizeX, i * blockSizeY));
+    private void setBorder(int level) {
+        switch (level) {
+            case 1:
+                for (int i = 0; i < 40; i++) {
+                    for (int j = 0; j < 40; j++) {
+                        if ((i == 0 || i == 39) || (j == 0 || j == 39)) {
+                            border.add(new Block(getImage("brickBlock.png"), j * blockSizeX, i * blockSizeY));
+                        }
+                    }
                 }
-            }
+            break;
         }
     }
 }

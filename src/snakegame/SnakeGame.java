@@ -7,7 +7,7 @@ import java.awt.Dimension;
 
 public class SnakeGame extends GameEngine {
 
-    private GameSettings settings;
+    private final GameSettings settings;
 
     SnakeGame() {
         settings = new GameSettings();

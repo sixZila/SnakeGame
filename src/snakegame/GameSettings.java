@@ -6,10 +6,30 @@ public class GameSettings {
     private boolean nitroOn;
     private boolean mazeOn;
     private boolean poisonOn;
+    private int lives;
+    private int level;
     private int difficulty;
 
     GameSettings() {
         slowOn = nitroOn = mazeOn = poisonOn = true;
+        level = 1;
+        lives = 3;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public boolean isPoisonOn() {
