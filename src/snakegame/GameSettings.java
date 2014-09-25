@@ -9,11 +9,20 @@ public class GameSettings {
     private int lives;
     private int level;
     private int difficulty;
+    private int levelMod;
 
     GameSettings() {
         slowOn = nitroOn = mazeOn = poisonOn = true;
-        level = 1;
+        level = 0;
         lives = 3;
+    }
+
+    public int getLevelMod() {
+        return levelMod;
+    }
+
+    public void setLevelMod(int levelMod) {
+        this.levelMod = levelMod;
     }
 
     public int getLives() {
