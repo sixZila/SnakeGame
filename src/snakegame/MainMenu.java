@@ -13,8 +13,19 @@ public class MainMenu extends GameObject {
     private Sprite easyButton;
     private Sprite mediumButton;
     private Sprite hardButton;
+    private Sprite noBorderButton;
+    private Sprite borderButton;
+    private Sprite cornerBorderButton;
+    private Sprite innerBorderButton;
+    private Sprite innerCornerBorderButton;
     private Sprite optionsButton;
+    private Sprite backButton;
+    private Sprite poisonButton;
+    private Sprite slowButton;
+    private Sprite nitroButton;
+    private Sprite mazeButton;
     private int menuStatus;
+    private int modifier;
     private final GameSettings settings;
     private final HighScore highScores;
 
@@ -27,12 +38,25 @@ public class MainMenu extends GameObject {
     @Override
     public void initResources() {
         menuStatus = 0;
+        modifier = -1;
         showCursor();
         text = new Text(new Font("Courier", Font.PLAIN, 20), Color.white);
         easyButton = new Sprite(getImage("easyButton.png"), 128, 100);
         mediumButton = new Sprite(getImage("mediumButton.png"), 128, 200);
         hardButton = new Sprite(getImage("hardButton.png"), 128, 300);
-        optionsButton = new Sprite(getImage("optionsButton.png"), 128, 400);
+        backButton = new Sprite(getImage("backButton.png"), 128, 400);
+
+        noBorderButton = new Sprite(getImage("1.png"), 128, 50);
+        borderButton = new Sprite(getImage("2.png"), 128, 150);
+        cornerBorderButton = new Sprite(getImage("3.png"), 128, 250);
+        innerBorderButton = new Sprite(getImage("4.png"), 128, 350);
+        innerCornerBorderButton = new Sprite(getImage("5.png"), 128, 450);
+        optionsButton = new Sprite(getImage("optionsButton.png"), 128, 550);
+
+        slowButton = new Sprite(getImage("slow.png"), 128, 50);
+        nitroButton = new Sprite(getImage("nitro.png"), 128, 150);
+        mazeButton = new Sprite(getImage("maze.png"), 128, 250);
+        poisonButton = new Sprite(getImage("poison.png"), 128, 350);
     }
 
     @Override
@@ -41,44 +65,105 @@ public class MainMenu extends GameObject {
             //0 = main menu | 1 = customize game
             switch (menuStatus) {
                 case 0:
+                    noBorderButton.update(l);
+                    borderButton.update(l);
+                    cornerBorderButton.update(l);
+                    innerBorderButton.update(l);
+                    innerCornerBorderButton.update(l);
+
+                    //change this to checkPosMouse([SPRITE NAME], true);
+                    if (checkPosMouse(borderButton, true)) {
+                        menuStatus = 1;
+                        settings.setLevel(1);
+                        modifier = 0;
+                    } else if (checkPosMouse(noBorderButton, true)) {
+                        menuStatus = 1;
+                        settings.setLevel(0);
+                        modifier = 1;
+                    } else if (checkPosMouse(cornerBorderButton, true)) {
+                        menuStatus = 1;
+                        settings.setLevel(2);
+                        modifier = 2;
+                    } else if (checkPosMouse(innerBorderButton, true)) {
+                        menuStatus = 1;
+                        settings.setLevel(3);
+                        modifier = 3;
+                    } else if (checkPosMouse(innerCornerBorderButton, true)) {
+                        menuStatus = 1;
+                        settings.setLevel(4);
+                        modifier = 4;
+                    } else if (checkPosMouse(optionsButton, true)) {
+                        menuStatus = 2;
+                        backButton.setY(550);
+                    }
+                    break;
+                case 1:
                     easyButton.update(l);
                     mediumButton.update(l);
                     hardButton.update(l);
-                    optionsButton.update(l);
-
-                    //change this to checkPosMouse([SPRITE NAME], true);
                     if (checkPosMouse(easyButton, true)) {
                         parent.nextGameID = 1;
+                        settings.setLevelMod(modifier * 3);
                         settings.setDifficulty(0);
                         finish();
                     } else if (checkPosMouse(mediumButton, true)) {
                         parent.nextGameID = 1;
+                        settings.setLevelMod(modifier * 3 + 1);
                         settings.setDifficulty(1);
                         finish();
                     } else if (checkPosMouse(hardButton, true)) {
                         parent.nextGameID = 1;
                         settings.setDifficulty(2);
+                        settings.setLevelMod(modifier * 3 + 2);
                         finish();
-                    } else if (checkPosMouse(optionsButton, true)) {
-                        menuStatus = 1;
-                    }
-                    break;
-                case 1:
-                    //change this to checkPosMouse([SPRITE NAME], true);
-                    if (checkPosMouse(245, 75, 370, 95)) {
-                        settings.setNitroOn(!settings.isNitroOn());
-                    } else if (checkPosMouse(245, 150, 370, 170)) {
-                        settings.setSlowOn(!settings.isSlowOn());
-                    } else if (checkPosMouse(245, 225, 370, 240)) {
-                        settings.setMazeOn(!settings.isMazeOn());
-                    } else if (checkPosMouse(245, 300, 370, 320)) {
-                        settings.setPoison(!settings.isPoisonOn());
-                    } else if (checkPosMouse(330, 375, 340, 395)) {
-                        settings.setLives((settings.getLives() - 1) < 1 ? 9 : (settings.getLives() - 1));
-                    } else if (checkPosMouse(370, 375, 380, 395)) {
-                        settings.setLives((settings.getLives()) % 9 + 1);
-                    } else if (checkPosMouse(245, 450, 370, 470)) {
+                    } else if (checkPosMouse(backButton, true)) {
                         menuStatus = 0;
+                    }
+                case 2:
+                    slowButton.update(l);
+                    nitroButton.update(l);
+                    mazeButton.update(l);
+                    poisonButton.update(l);
+                    //change this to checkPosMouse([SPRITE NAME], true);
+                    if (checkPosMouse(nitroButton, true)) {
+                        settings.setNitroOn(!settings.isNitroOn());
+                        
+                        if (settings.isNitroOn()) {
+                            nitroButton.setImage(getImage("nitro.png"));
+                        } else {
+                            nitroButton.setImage(getImage("nitro_off.png"));
+                        }
+                    } else if (checkPosMouse(slowButton, true)) {
+                        settings.setSlowOn(!settings.isSlowOn());
+                        
+                        if (settings.isSlowOn()) {
+                            slowButton.setImage(getImage("slow.png"));
+                        } else {
+                            slowButton.setImage(getImage("slow_off.png"));
+                        }
+                    } else if (checkPosMouse(mazeButton, true)) {
+                        settings.setMazeOn(!settings.isMazeOn());
+                        
+                        if (settings.isMazeOn()) {
+                            mazeButton.setImage(getImage("maze.png"));
+                        } else {
+                            mazeButton.setImage(getImage("maze_off.png"));
+                        }
+                    } else if (checkPosMouse(poisonButton, true)) {
+                        settings.setPoison(!settings.isPoisonOn());
+                        
+                        if (settings.isPoisonOn()) {
+                            poisonButton.setImage(getImage("poison.png"));
+                        } else {
+                            poisonButton.setImage(getImage("poison_off.png"));
+                        }
+                    } else if (checkPosMouse(330, 450, 340, 470)) {
+                        settings.setLives((settings.getLives() - 1) < 1 ? 9 : (settings.getLives() - 1));
+                    } else if (checkPosMouse(370, 450, 380, 470)) {
+                        settings.setLives((settings.getLives()) % 9 + 1);
+                    } else if (checkPosMouse(backButton, true)) {
+                        menuStatus = 0;
+                        backButton.setY(400);
                     }
                     break;
             }
@@ -97,32 +182,32 @@ public class MainMenu extends GameObject {
         switch (menuStatus) {
             case 0:
                 //Change this to the sprites (the text.drawString)
-                easyButton.render(gd);
-                mediumButton.render(gd);
-                hardButton.render(gd);
+                noBorderButton.render(gd);
+                borderButton.render(gd);
+                cornerBorderButton.render(gd);
+                innerBorderButton.render(gd);
+                innerCornerBorderButton.render(gd);
                 optionsButton.render(gd);
                 break;
             case 1:
-                text.drawString(gd, "NITRO:", 245, 75);
-                writeOnOff(settings.isNitroOn(), 350, 75, gd);
-
-                text.drawString(gd, "SLOW:", 245, 150);
-                writeOnOff(settings.isSlowOn(), 350, 150, gd);
-
-                text.drawString(gd, "MAZE:", 245, 225);
-                writeOnOff(settings.isMazeOn(), 350, 225, gd);
-
-                text.setColor(Color.WHITE);
-                text.drawString(gd, "POISON:", 245, 300);
-                writeOnOff(settings.isPoisonOn(), 350, 300, gd);
+                easyButton.render(gd);
+                mediumButton.render(gd);
+                hardButton.render(gd);
+                backButton.render(gd);
+                break;
+            case 2:
+                nitroButton.render(gd);
+                slowButton.render(gd);
+                mazeButton.render(gd);
+                poisonButton.render(gd);
 
                 text.setColor(Color.WHITE);
-                text.drawString(gd, "LIVES:", 245, 375);
-                text.drawString(gd, settings.getLives() + "", 350, 375);
-                text.drawString(gd, "<", 330, 375);
-                text.drawString(gd, ">", 370, 375);
+                text.drawString(gd, "LIVES:", 245, 450);
+                text.drawString(gd, settings.getLives() + "", 350, 450);
+                text.drawString(gd, "<", 330, 450);
+                text.drawString(gd, ">", 370, 450);
 
-                text.drawString(gd, "BACK", 245, 450);
+                backButton.render(gd);
                 break;
         }
 
